@@ -161,7 +161,7 @@ class MavDynamics:
         wr = v_air[2]
 
         # compute airspeed
-        self._Va = np.sqrt(ur**2 + vr**2 + wr**2)
+        self._Va = (ur**2 + vr**2 + wr**2) ** (1/2)
 
         # compute angle of attack
         if ur == 0:
@@ -197,10 +197,12 @@ class MavDynamics:
 
         # compute Lift and Drag Forces
         # p 45
-        F_lift = 1/2 * MAV.rho * self._Va**2 * MAV.S_wing * (CL + MAV.C_L_q * ((MAV.c * q) / (2 * self._Va)) +
+        F_lift = 1/2 * MAV.rho * self._Va**2 * MAV.S_wing * (MAV.C_L_0 +
+                MAV.C_L_alpha * self._alpha + MAV.C_L_q * ((MAV.c * q) / (2 * self._Va)) +
                 MAV.C_L_delta_e * delta.elevator)
 
-        F_drag = 1/2 * MAV.rho * self._Va**2 * MAV.S_wing * (CD + MAV.C_D_q * ((MAV.c * q) / (2 * self._Va)) +
+        F_drag = 1/2 * MAV.rho * self._Va**2 * MAV.S_wing * (MAV.C_D_0 +
+                MAV.C_D_alpha * self._alpha + MAV.C_D_q * ((MAV.c * q) / (2 * self._Va)) +
                 MAV.C_D_delta_e * delta.elevator)
 
         # compute propeller thrust and torque
@@ -218,9 +220,9 @@ class MavDynamics:
                 (-MAV.C_D_delta_e * np.cos(self._alpha) + MAV.C_L_delta_e * np.sin(self._alpha)) * delta.elevator)
 
         fz = 1/2 * MAV.rho * self._Va**2 * MAV.S_wing * (
-                (-CD * np.sin(self._alpha) + CL * np.cos(self._alpha)) +
-                (-MAV.C_D_q * np.sin(self._alpha) + MAV.C_L_q * np.cos(self._alpha)) * ((MAV.c * q) / (2 * self._Va)) +
-                (-MAV.C_D_delta_e * np.sin(self._alpha) + MAV.C_L_delta_e * np.cos(self._alpha)) * delta.elevator)
+                (-CD * np.sin(self._alpha) - CL * np.cos(self._alpha)) +
+                (-MAV.C_D_q * np.sin(self._alpha) - MAV.C_L_q * np.cos(self._alpha)) * ((MAV.c * q) / (2 * self._Va)) +
+                (-MAV.C_D_delta_e * np.sin(self._alpha) - MAV.C_L_delta_e * np.cos(self._alpha)) * delta.elevator)
 
         # compute lateral forces in body frame
         # p 50

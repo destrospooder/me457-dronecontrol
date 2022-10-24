@@ -19,7 +19,6 @@ from message_types.msg_delta import MsgDelta
 # initialize the visualization
 VIDEO = False  # True==write video, False==don't write video
 mav_view = MavViewer()  # initialize the mav viewer
-data_view = DataViewer()  # initialize view of data plots
 if VIDEO is True:
     from chap2.video_writer import VideoWriter
     video = VideoWriter(video_name="chap4_video.avi",
@@ -32,12 +31,16 @@ mav = MavDynamics(SIM.ts_simulation)
 delta = MsgDelta()
 
 # initialize the simulation time
-sim_time = SIM.start_time
+sim_time = 0
+end_time = 1000
 plot_time = sim_time
+refr_rate = 0.1
+time_step = 0.02
+
 
 # main simulation loop
 print("Press Command-Q to exit...")
-while sim_time < SIM.end_time:
+while sim_time < end_time:
     # -------set control surfaces-------------
     delta.elevator = -0.1248
     delta.aileron = 0.001836
@@ -49,19 +52,14 @@ while sim_time < SIM.end_time:
     mav.update(delta, current_wind)  # propagate the MAV dynamics
 
     # -------update viewer-------------
-    if sim_time-plot_time > SIM.ts_plotting:
+    if sim_time-plot_time > refr_rate:
         mav_view.update(mav.true_state)  # plot body of MAV
-        plot_time = sim_time
-    data_view.update(mav.true_state,  # true states
-                     mav.true_state,  # estimated states
-                     mav.true_state,  # commanded states
-                     delta,  # inputs to aircraft
-                     SIM.ts_simulation)
+        plot_time = 500
     if VIDEO is True:
         video.update(sim_time)
 
     # -------increment time-------------
-    sim_time += SIM.ts_simulation
+    sim_time += time_step
 
 if VIDEO is True:
     video.close()

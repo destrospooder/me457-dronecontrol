@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="73e490ca-bc9f-467b-b369-e8770df5c18f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/me457_dronecontrol.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/me457_dronecontrol.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/chap4/mav_dynamics.py" beforeDir="false" afterPath="$PROJECT_DIR$/chap4/mav_dynamics.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parameters/aerosonde_parameters.py" beforeDir="false" afterPath="$PROJECT_DIR$/parameters/aerosonde_parameters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/chap4/mavsim_chap4.py" beforeDir="false" afterPath="$PROJECT_DIR$/chap4/mavsim_chap4.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,33 +25,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "last_opened_file_path": "C:/Users/Ben/Desktop/me457/me457-dronecontrol/chap3/mavsim_chap3.py"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Ben/Desktop/me457/me457-dronecontrol/chap4/mavsim_chap4.py&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;advanced.settings&quot;
   },
-  "keyToStringList": {
-    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
-      "Python"
+  &quot;keyToStringList&quot;: {
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;Python&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager">
-    <configuration name="mavsim_chap3" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+    <configuration name="mavsim_chap4" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="me457_dronecontrol" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Users\Ben\Desktop\me457\me457-dronecontrol\venv\Scripts\python.exe" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/chap3" />
+      <option name="SDK_HOME" value="C:\Users\Ben\Desktop\PyCharm\venv\Scripts\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/chap4" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/chap3/mavsim_chap3.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/chap4/mavsim_chap4.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
