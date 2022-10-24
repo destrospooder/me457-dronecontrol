@@ -1,7 +1,7 @@
 """
 mavsimPy
     - Chapter 4 assignment for Beard & McLain, PUP, 2012
-    - Update history:  
+    - Update history:
         12/27/2018 - RWB
         1/17/2019 - RWB
 """
@@ -37,15 +37,14 @@ plot_time = sim_time
 refr_rate = 0.1
 time_step = 0.02
 
-
 # main simulation loop
 print("Press Command-Q to exit...")
 while sim_time < end_time:
     # -------set control surfaces-------------
-    delta.elevator = -0.1248
-    delta.aileron = 0.001836
-    delta.rudder = -0.0003026
-    delta.throttle = 0.6768
+    delta.elevator = 0.5
+    delta.aileron = 0.5
+    delta.rudder = 0.5
+    delta.throttle = 0.5
 
     # -------physical system-------------
     current_wind = wind.update()  # get the new wind vector
