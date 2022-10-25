@@ -77,7 +77,7 @@ class MavDynamics:
         e1 = self._state.item(7)
         e2 = self._state.item(8)
         e3 = self._state.item(9)
-        normE = np.sqrt(e0**2+e1**2+e2**2+e3**2)
+        normE = (e0**2+e1**2+e2**2+e3**2) ** (1/2)
         self._state[6][0] = self._state.item(6)/normE
         self._state[7][0] = self._state.item(7)/normE
         self._state[8][0] = self._state.item(8)/normE
@@ -173,7 +173,7 @@ class MavDynamics:
         if self._Va == 0:
             self._beta = 0
         else:
-            self._beta = np.arcsin(vr/(np.sqrt(ur**2 + vr**2 + wr**2)))
+            self._beta = np.arcsin(vr/((ur**2 + vr**2 + wr**2) ** (1/2)))
 
     def _forces_moments(self, delta):
         """
@@ -191,9 +191,10 @@ class MavDynamics:
         f_g = MAV.mass * MAV.gravity
 
         # compute Lift and Drag coefficients
-        # p 48 (non-linear model)
-        CL = (np.pi * MAV.AR) / (1 + (np.sqrt(1 + (MAV.AR / 2)**2)))
-        CD = MAV.C_D_p + ((MAV.C_L_0 + CL * self._alpha)**2 / (np.pi * MAV.e * MAV.AR))
+        # p 48 (linear model)
+        CL = (np.pi * MAV.AR) / (1 + ((1 + (MAV.AR / 2)**2) ** (1/2))) # THIS IS C L SUB ALPHA
+        CD = MAV.C_D_p + ((MAV.C_L_0 + CL * self._alpha)**2 / (np.pi * MAV.e * MAV.AR)) # THIS IS C D OF ALPHA (4.11)
+
 
         # compute Lift and Drag Forces
         # p 45
@@ -213,14 +214,16 @@ class MavDynamics:
 
         # You can screw yourself I typed all of this out nicely, I refuse to use F_list and F_drag and matrix
         # multiply this out :) -BA
+        CL_of_alpha = MAV.C_L_0 + CL*self._alpha
 
+        
         fx = 1/2 * MAV.rho * self._Va**2 * MAV.S_wing * (
-                (-CD * np.cos(self._alpha) + CL * np.sin(self._alpha)) +
+                (-CD * np.cos(self._alpha) + CL_of_alpha * np.sin(self._alpha)) +
                 (-MAV.C_D_q * np.cos(self._alpha) + MAV.C_L_q * np.sin(self._alpha)) * ((MAV.c * q) / (2 * self._Va)) +
                 (-MAV.C_D_delta_e * np.cos(self._alpha) + MAV.C_L_delta_e * np.sin(self._alpha)) * delta.elevator)
 
         fz = 1/2 * MAV.rho * self._Va**2 * MAV.S_wing * (
-                (-CD * np.sin(self._alpha) - CL * np.cos(self._alpha)) +
+                (-CD * np.sin(self._alpha) - CL_of_alpha * np.cos(self._alpha)) +
                 (-MAV.C_D_q * np.sin(self._alpha) - MAV.C_L_q * np.cos(self._alpha)) * ((MAV.c * q) / (2 * self._Va)) +
                 (-MAV.C_D_delta_e * np.sin(self._alpha) - MAV.C_L_delta_e * np.cos(self._alpha)) * delta.elevator)
 
@@ -264,7 +267,7 @@ class MavDynamics:
         a = (MAV.rho * MAV.D_prop**5 * MAV.C_Q0) / ((2*np.pi)**2)
         b = ((MAV.rho * MAV.D_prop**4 * MAV.C_Q1 * Va) / (2*np.pi)) + (MAV.KQ * MAV.KV) / MAV.R_motor
         c = MAV.rho * MAV.D_prop**3 * MAV.C_Q2 * Va**2 - MAV.KQ * V_in / MAV.R_motor + MAV.KQ * MAV.i0
-        Omega_p = (-b + np.sqrt(b**2 - 4*a*c)) / (2*a)
+        Omega_p = (-b + (b**2 - 4*a*c) ** (1/2)) / (2*a)
 
         n = Omega_p / (2*np.pi)
 

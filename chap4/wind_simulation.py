@@ -32,21 +32,21 @@ class WindSimulation:
 
         # Dryden transfer functions (section 4.4 UAV book)
         # slide 40
-        self.u_w = transferFunction(num=np.array([[sigma_u * np.sqrt(2*Va/Lu)]]), den=np.array([[1, Va/Lu]]),Ts=0.01)
-        self.v_w = transferFunction(num=np.array([[sigma_v * np.sqrt(3*Va/Lv),
+        self.u_w = transferFunction(num=np.array([[sigma_u * (2*Va/(np.pi*Lu)) ** (1/2)]]), den=np.array([[1, Va/Lu]]),Ts=0.01)
+        self.v_w = transferFunction(num=np.array([[sigma_v * (3*Va/Lv) ** (1/2),
             sigma_v * np.sqrt(3*Va/Lv) * Va/(np.sqrt(3) * Lv)]]),
-                den=np.array([[1, 2*Va/Lv, (Va/Lv)**2]]), Ts=0.01)
+                den=np.array([[1, 2*Va/(np.pi*Lv), (Va/(Lv))**2]]), Ts=0.01)
         self.w_w = transferFunction(num=np.array([[sigma_w * np.sqrt(3*Va/Lw),
-            sigma_w * np.sqrt(3*Va/Lw) * Va/(np.sqrt(3) * Lw)]]),
-                den=np.array([[1, 2*Va/Lw, (Va/Lw)**2]]), Ts=0.01)
+            sigma_w * np.sqrt(3*Va/(np.pi*Lw)) * Va/(np.sqrt(3) * Lw)]]),
+                den=np.array([[1, 2*Va/Lw, (Va/(Lw))**2]]), Ts=0.01)
         self._Ts = Ts
 
     def update(self):
         # returns a six vector.
         #   The first three elements are the steady state wind in the inertial frame
         #   The second three elements are the gust in the body frame
-        gust = np.array([[self.u_w.update(np.random.randn())],
-                         [self.v_w.update(np.random.randn())],
-                         [self.w_w.update(np.random.randn())]])
-        #gust = np.array([[0.],[0.],[0.]])
+        # gust = np.array([[self.u_w.update(np.random.randn())],
+        #                  [self.v_w.update(np.random.randn())],
+        #                  [self.w_w.update(np.random.randn())]])
+        gust = np.array([[0.],[0.],[0.]])
         return np.concatenate(( self._steady_state, gust ))
