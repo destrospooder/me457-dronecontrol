@@ -12,7 +12,7 @@ from tools.rotations import Euler2Quaternion, Quaternion2Euler
 import parameters.aerosonde_parameters as MAV
 from parameters.simulation_parameters import ts_simulation as Ts
 from message_types.msg_delta import MsgDelta
-
+from control.matlab import *
 
 def compute_model(mav, trim_state, trim_input):
     A_lon, B_lon, A_lat, B_lat = compute_ss_model(mav, trim_state, trim_input)

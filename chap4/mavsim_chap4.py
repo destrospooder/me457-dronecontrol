@@ -39,10 +39,17 @@ plot_time = sim_time
 print("Press Command-Q to exit...")
 while sim_time < SIM.end_time:
     # -------set control surfaces-------------
-    delta.elevator = -0.1248
-    delta.aileron = 0.001836
-    delta.rudder = -0.0003026
-    delta.throttle = 0.6768
+    # orginal loop-d-loop deltas:
+    # delta.elevator = -0.1248
+    # delta.aileron = 0.001836
+    # delta.rudder = -0.0003026
+    # delta.throttle = 0.6768
+
+    # experimental deltas:
+    delta.elevator = 0
+    delta.aileron = 0
+    delta.rudder = 0.500
+    delta.throttle = -0.6768
 
     # -------physical system-------------
     current_wind = wind.update()  # get the new wind vector
