@@ -14,8 +14,8 @@ import numpy as np
 import parameters.simulation_parameters as SIM
 
 from chap3.mav_dynamics import MavDynamics
-import unit_tests.chap3_truth as trueValues
-# import chap3_truth as trueValues
+#import unit_tests.chap3_truth as trueValues
+import chap3_truth as trueValues
 
 
 # check fx
@@ -205,8 +205,10 @@ def test_update_Mz():
     # get update results
     mav.update(forces_moments)  # propagate the MAV dynamics
     #compare against true values
+    print("mav state shape" , mav._state.shape)
+    print("Mz shape" , trueValues.state_Mz.shape)
+    print("MZ", trueValues.state_Mz)
     assert np.allclose(mav._state, trueValues.state_Mz)
-test_update_Mz()
 # test_derivative_fx()
 # test_update_fx()
 # test_derivative_fy()
@@ -218,4 +220,4 @@ test_update_Mz()
 # test_derivative_My()
 # test_update_My()
 # test_derivative_Mz()
-# test_update_Mz()
+test_update_Mz()

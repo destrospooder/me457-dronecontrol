@@ -75,11 +75,14 @@ class MavDynamics:
         self._state[8][0] = self._state.item(8) / normE
         self._state[9][0] = self._state.item(9) / normE
 
+        print("self state", self._state)
+        print("self state shape" , self._state.shape)
         # update the message class for the true state
         self._update_true_state()
 
     ###################################
     # private functions
+        return self
 
     def _derivatives(self, state, forces_moments):
         """

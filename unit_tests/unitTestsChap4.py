@@ -18,7 +18,9 @@ import parameters.simulation_parameters as SIM
 
 from chap4.mav_dynamics import MavDynamics
 from message_types.msg_delta import MsgDelta
-import unit_tests.chap4_truth as trueValues
+#import unit_tests.chap4_truth as trueValues
+import chap4_truth as trueValues
+print(trueValues)
 import pytest
 @pytest.fixture # create variables that can be used in each test function
 def sim():
