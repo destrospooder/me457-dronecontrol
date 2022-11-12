@@ -45,8 +45,8 @@ class WindSimulation:
         # returns a six vector.
         #   The first three elements are the steady state wind in the inertial frame
         #   The second three elements are the gust in the body frame
-        # gust = np.array([[self.u_w.update(np.random.randn())],
-        #                  [self.v_w.update(np.random.randn())],
-        #                  [self.w_w.update(np.random.randn())]])
-        gust = np.array([[0.],[0.],[0.]])
+        gust = np.array([[self.u_w.update(np.random.randn())],
+                         [self.v_w.update(np.random.randn())],
+                         [self.w_w.update(np.random.randn())]])
+        # gust = np.array([[0.],[0.],[0.]])
         return np.concatenate(( self._steady_state, gust ))

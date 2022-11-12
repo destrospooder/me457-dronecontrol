@@ -56,6 +56,9 @@ def test_update_fx():
     # get update results
     mav.update(forces_moments)  # propagate the MAV dynamics
     #compare against true values
+    print('force moments', forces_moments)
+    print('mavstate', mav._state)
+    print('true values state fx', trueValues.state_fx)
     assert np.allclose(mav._state, trueValues.state_fx)
 
 

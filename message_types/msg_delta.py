@@ -38,4 +38,3 @@ class MsgDelta:
               'aileron=', self.aileron,
               'rudder=', self.rudder,
               'throttle=', self.throttle)
-

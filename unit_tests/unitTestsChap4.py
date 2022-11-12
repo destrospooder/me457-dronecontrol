@@ -48,8 +48,12 @@ def sim():
 # motor torque and thrust
 def test_motor_thrust_torque(sim):
     mav, delta, wind = sim
-    delta.throttle = 0.9
-    thrust, torque = mav._motor_thrust_torque(delta.throttle)
+    # delta.throttle = 0.9
+    delta_t = 0.9
+    thrust, torque = mav._motor_thrust_torque(delta_t)
+    print('thurst', thrust)
+    print('torque', torque)
+   
     assert np.isclose(thrust, trueValues.thrust)
     assert np.isclose(torque, trueValues.torque)
 
@@ -59,6 +63,8 @@ def test_forces_moments_elevator(sim):
     mav, delta, wind = sim
     delta.elevator = -0.2
     forcesAndMoments = mav._forces_moments(delta)
+    print('forces and moments code', forcesAndMoments)
+    print('trueValues.forcesAndMoments_e', trueValues.forcesAndMoments_e)
     assert np.allclose(forcesAndMoments, trueValues.forcesAndMoments_e)
 
 # test aileron
@@ -66,6 +72,8 @@ def test_forces_moments_aileron(sim):
     mav, delta, wind = sim
     delta.aileron =   0.1
     forcesAndMoments = mav._forces_moments(delta)
+    print('forces and moments code', forcesAndMoments)
+    print('trueValues.forcesAndMoments_a', trueValues.forcesAndMoments_a)
     assert np.allclose(forcesAndMoments, trueValues.forcesAndMoments_a)
 
 # test rudder
@@ -73,6 +81,8 @@ def test_forces_moments_rudder(sim):
     mav, delta, wind = sim
     delta.rudder =    0.01
     forcesAndMoments = mav._forces_moments(delta)
+    print('forces and moments code', forcesAndMoments)
+    print('trueValues.forcesAndMoments_r', trueValues.forcesAndMoments_r)
     assert np.allclose(forcesAndMoments, trueValues.forcesAndMoments_r)
 
 

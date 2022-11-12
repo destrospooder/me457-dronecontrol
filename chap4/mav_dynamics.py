@@ -192,9 +192,9 @@ class MavDynamics:
 
         # compute Lift and Drag coefficients
         # p 48 (linear model)
-        CL = (np.pi * MAV.AR) / (1 + ((1 + (MAV.AR / 2)**2) ** (1/2))) # THIS IS C L SUB ALPHA
-        CD = MAV.C_D_p + ((MAV.C_L_0 + CL * self._alpha)**2 / (np.pi * MAV.e * MAV.AR)) # THIS IS C D OF ALPHA (4.11)
-
+        CL = (np.pi * MAV.AR) / (1 + ((1 + (MAV.AR / 2)**2) ** (1/2))) # THIS IS C L SUB ALPHA (Just before 4.11)
+        CD = MAV.C_D_p + ((MAV.C_L_0 + CL * self._alpha)**2 / (np.pi * MAV.e * MAV.AR)) # THIS IS C D OF ALPHA (4.11) (Non-linear)
+        
 
         # compute Lift and Drag Forces
         # p 45
@@ -214,16 +214,17 @@ class MavDynamics:
 
         # You can screw yourself I typed all of this out nicely, I refuse to use F_list and F_drag and matrix
         # multiply this out :) -BA
-        CL_of_alpha = MAV.C_L_0 + CL*self._alpha
+        CL_of_alpha = MAV.C_L_0 + MAV.C_L_alpha*self._alpha
+        CD_of_alpha = MAV.C_D_0 + MAV.C_D_alpha*self._alpha
 
         
         fx = 1/2 * MAV.rho * self._Va**2 * MAV.S_wing * (
-                (-CD * np.cos(self._alpha) + CL_of_alpha * np.sin(self._alpha)) +
+                (-CD_of_alpha * np.cos(self._alpha) + CL_of_alpha * np.sin(self._alpha)) +
                 (-MAV.C_D_q * np.cos(self._alpha) + MAV.C_L_q * np.sin(self._alpha)) * ((MAV.c * q) / (2 * self._Va)) +
                 (-MAV.C_D_delta_e * np.cos(self._alpha) + MAV.C_L_delta_e * np.sin(self._alpha)) * delta.elevator)
 
         fz = 1/2 * MAV.rho * self._Va**2 * MAV.S_wing * (
-                (-CD * np.sin(self._alpha) - CL_of_alpha * np.cos(self._alpha)) +
+                (-CD_of_alpha * np.sin(self._alpha) - CL_of_alpha * np.cos(self._alpha)) +
                 (-MAV.C_D_q * np.sin(self._alpha) - MAV.C_L_q * np.cos(self._alpha)) * ((MAV.c * q) / (2 * self._Va)) +
                 (-MAV.C_D_delta_e * np.sin(self._alpha) - MAV.C_L_delta_e * np.cos(self._alpha)) * delta.elevator)
 
@@ -231,7 +232,7 @@ class MavDynamics:
         # p 50
         fy = 1/2 * MAV.rho * self._Va**2 * MAV.S_wing * (
                 (MAV.C_Y_0 + MAV.C_Y_beta * self._beta + MAV.C_Y_p * (MAV.b * p)/(2 * self._Va) +
-                MAV.C_Y_r * (MAV.b * r)/(2 * self._Va) + MAV.C_Y_delta_a * delta.elevator + MAV.C_Y_delta_r * delta.rudder))
+                MAV.C_Y_r * (MAV.b * r)/(2 * self._Va) + MAV.C_Y_delta_a * delta.aileron + MAV.C_Y_delta_r * delta.rudder))
 
         # compute longitudinal torque in body frame
         # p 45
@@ -241,11 +242,13 @@ class MavDynamics:
 
         # compute lateral torques in body frame
         # p 50-51
+        # 4.15
         Mx = (MAV.rho/2) * self._Va**2 * MAV.S_wing * MAV.b * (MAV.C_ell_0 + MAV.C_ell_beta * self._beta +
                 MAV.C_ell_p * (MAV.b * p)/(2 * self._Va) + MAV.C_ell_r * (MAV.b * r)/(2 * self._Va) +
                 MAV.C_ell_delta_a * delta.aileron + MAV.C_ell_delta_r * delta.rudder)
                 # Roll moment
-
+        
+        # 4.16
         Mz = (MAV.rho/2) * self._Va**2 * MAV.S_wing * MAV.b * (MAV.C_n_0 + MAV.C_n_beta * self._beta +
                 MAV.C_n_p * (MAV.b * p)/(2 * self._Va) + MAV.C_n_r * (MAV.b * r)/(2 * self._Va) +
                 MAV.C_n_delta_a * delta.aileron + MAV.C_n_delta_r * delta.rudder)
