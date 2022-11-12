@@ -10,7 +10,7 @@ from tools.rotations import Euler2Quaternion
 north0 = 0.  # initial north position
 east0 = 0.  # initial east position
 down0 = 0.  # initial down position
-u0 = 1.  # initial velocity along body x-axis
+u0 = 0.  # initial velocity along body x-axis
 v0 = 0.  # initial velocity along body y-axis
 w0 = 0.  # initial velocity along body z-axis
 phi0 = 0.  # initial roll angle
@@ -31,7 +31,7 @@ e3 = e.item(3)
 ######################################################################################
                 #   Physical Parameters
 ######################################################################################
-mass = 13.5 #kg
+mass = 11 #kg
 Jx = 0.8244 #kg m^2
 Jy = 1.135
 Jz = 1.759

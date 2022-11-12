@@ -68,7 +68,7 @@ class MavDynamics:
         e2 = self._state.item(8)
         e3 = self._state.item(9)
 
-        normE = np.sqrt(e0 ** 2 + e1 ** 2 + e2 ** 2 + e3 ** 2)
+        normE = (e0 ** 2 + e1 ** 2 + e2 ** 2 + e3 ** 2) ** (1/2)
 
         self._state[6][0] = self._state.item(6) / normE
         self._state[7][0] = self._state.item(7) / normE
@@ -82,7 +82,7 @@ class MavDynamics:
 
     ###################################
     # private functions
-        return self
+        # return self
 
     def _derivatives(self, state, forces_moments):
         """
