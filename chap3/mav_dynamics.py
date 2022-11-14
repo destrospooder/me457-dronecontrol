@@ -49,7 +49,7 @@ class MavDynamics:
 
     def update(self, forces_moments):
         '''
-            Integrate the differential equations defining dynamics.
+            Integrate the differential equations defining dynamics. 
             Inputs are the forces and moments on the aircraft.
             Ts is the time step between function calls.
         '''
@@ -57,26 +57,23 @@ class MavDynamics:
         # Integrate ODE using Runge-Kutta RK4 algorithm
         time_step = self.ts_simulation
         k1 = self._derivatives(self._state, forces_moments)
-        k2 = self._derivatives(self._state + time_step / 2. * k1, forces_moments)
-        k3 = self._derivatives(self._state + time_step / 2. * k2, forces_moments)
-        k4 = self._derivatives(self._state + time_step * k3, forces_moments)
-        self._state += time_step / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
+        k2 = self._derivatives(self._state + time_step/2.*k1, forces_moments)
+        k3 = self._derivatives(self._state + time_step/2.*k2, forces_moments)
+        k4 = self._derivatives(self._state + time_step*k3, forces_moments)
+        self._state += time_step/6 * (k1 + 2*k2 + 2*k3 + k4)
 
         # normalize the quaternion
         e0 = self._state.item(6)
         e1 = self._state.item(7)
+
         e2 = self._state.item(8)
         e3 = self._state.item(9)
+        normE = np.sqrt(e0**2+e1**2+e2**2+e3**2)
+        self._state[6][0] = self._state.item(6)/normE
+        self._state[7][0] = self._state.item(7)/normE
+        self._state[8][0] = self._state.item(8)/normE
+        self._state[9][0] = self._state.item(9)/normE
 
-        normE = (e0 ** 2 + e1 ** 2 + e2 ** 2 + e3 ** 2) ** (1/2)
-
-        self._state[6][0] = self._state.item(6) / normE
-        self._state[7][0] = self._state.item(7) / normE
-        self._state[8][0] = self._state.item(8) / normE
-        self._state[9][0] = self._state.item(9) / normE
-
-        # print("self state", self._state)
-        # print("self state shape" , self._state.shape)
         # update the message class for the true state
         self._update_true_state()
 

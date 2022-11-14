@@ -37,10 +37,10 @@ def test_derivative_fx():
     # print('u0', mav._state[3,0])
     # print('e0', mav._state[6,0])
     # print('mavstate', mav._state)
-    print('xdotA first', xdotA)
+    # print('xdotA first', xdotA)
     # xdotA[3,0] = 0.90909091
     # print('xdotA second', xdotA)
-    print('xdotfx true', trueValues.x_dot_fx)
+    # print('xdotfx true', trueValues.x_dot_fx)
     assert np.allclose(xdotA, trueValues.x_dot_fx)
 
 def test_update_fx():
@@ -56,7 +56,7 @@ def test_update_fx():
     # get update results
     mav.update(forces_moments)  # propagate the MAV dynamics
     #compare against true values
-    print('force moments', forces_moments)
+    # print('force moments', forces_moments)
     print('mavstate', mav._state)
     print('true values state fx', trueValues.state_fx)
     assert np.allclose(mav._state, trueValues.state_fx)
@@ -91,6 +91,8 @@ def test_update_fy():
     # get update results
     mav.update(forces_moments)  # propagate the MAV dynamics
     #compare against true values
+    print('mavstate', mav._state)
+    print('true values state fy', trueValues.state_fy)
     assert np.allclose(mav._state, trueValues.state_fy)
 
 
@@ -221,9 +223,9 @@ def test_update_Mz():
     print("Mz shape" , trueValues.state_Mz.shape)
     print("MZ", trueValues.state_Mz)
     assert np.allclose(mav._state, trueValues.state_Mz)
-test_derivative_fx()
-test_update_fx()
-# test_derivative_fy()
+# test_derivative_fx()
+# test_update_fx()
+test_derivative_fy()
 # test_update_fy()
 # test_derivative_fz()
 # test_update_fz()
