@@ -221,7 +221,7 @@ def test_update_Mz():
     print("Mz shape" , trueValues.state_Mz.shape)
     print("MZ", trueValues.state_Mz)
     assert np.allclose(mav._state, trueValues.state_Mz)
-# test_derivative_fx()
+test_derivative_fx()
 test_update_fx()
 # test_derivative_fy()
 # test_update_fy()

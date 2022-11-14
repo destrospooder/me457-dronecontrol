@@ -188,7 +188,7 @@ class MavDynamics:
         r = self._state.item(12)
 
         # compute gravitational forces
-        f_g = MAV.mass * MAV.gravity
+        fg = Quaternion2Rotation(self._state[6:10]).T @ np.array([[0], [0], [MAV.mass * MAV.gravity]])
 
         # compute Lift and Drag coefficients
         # p 48 (linear model)
@@ -263,24 +263,28 @@ class MavDynamics:
     def _motor_thrust_torque(self, Va, delta_t):
         # compute thrust and torque due to propeller  (See addendum by McLain)
         # map delta_t throttle command(0 to 1) into motor input voltage
-        V_in = MAV.V_max * delta_t
+        V_Max = 3.7 * MAV.ncells
+        V_in = V_Max * delta_t
 
         # Angular speed of propeller
         # slide 34
         a = (MAV.rho * MAV.D_prop**5 * MAV.C_Q0) / ((2*np.pi)**2)
-        b = ((MAV.rho * MAV.D_prop**4 * MAV.C_Q1 * Va) / (2*np.pi)) + (MAV.KQ * MAV.KV) / MAV.R_motor
-        c = MAV.rho * MAV.D_prop**3 * MAV.C_Q2 * Va**2 - MAV.KQ * V_in / MAV.R_motor + MAV.KQ * MAV.i0
-        Omega_p = (-b + (b**2 - 4*a*c) ** (1/2)) / (2*a)
+        b = ((MAV.rho * MAV.D_prop**4 * MAV.C_Q1 * self._Va) / (2*np.pi)) + (MAV.KQ * MAV.KV) / MAV.R_motor
+        c = MAV.rho * MAV.D_prop**3 * MAV.C_Q2 * self._Va**2 - MAV.KQ * V_in / MAV.R_motor + MAV.KQ * MAV.i0
+        Omega_p = (-b + (b**2 - 4*a*c) ** (0.5)) / (2.*a)
 
+        J_op = 2 * np.pi * self._Va / (Omega_p * MAV.D_prop)
+
+        C_T = MAV.C_T2 * J_op **2 + MAV.C_T1 * J_op + MAV.C_T0
+        C_Q = MAV.C_Q2 * J_op **2 + MAV.C_Q1 * J_op + MAV.C_Q0
         n = Omega_p / (2*np.pi)
 
         # thrust and torque due to propeller
         # slide 31
 
-        adv = self._Va / (n * MAV.D_prop)
-
-        thrust_prop = MAV.rho * n**2 * MAV.D_prop**4 * (MAV.C_T2 * adv**2 + MAV.C_T1 * adv + MAV.C_T0)
-        torque_prop = MAV.rho * n**2 * MAV.D_prop**5 * (MAV.C_Q2 * adv**2 + MAV.C_Q1 * adv + MAV.C_Q0)
+        #get from slides chapter 4 
+        thrust_prop = MAV.rho * n**2 * MAV.D_prop**4 * C_T
+        torque_prop = -MAV.rho * n**2 * MAV.D_prop**5 * C_Q 
         return thrust_prop, torque_prop
 
     def _update_true_state(self):

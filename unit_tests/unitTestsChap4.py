@@ -50,7 +50,7 @@ def test_motor_thrust_torque(sim):
     mav, delta, wind = sim
     # delta.throttle = 0.9
     delta_t = 0.9
-    thrust, torque = mav._motor_thrust_torque(delta_t)
+    thrust, torque = mav._motor_thrust_torque(0, delta_t)
     print('thurst', thrust)
     print('torque', torque)
    
