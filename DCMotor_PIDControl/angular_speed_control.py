@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 # f(t, x, u) = (Ku - y) / tau
 
 def f(t, y, u):
-    # mass sprint system state space form:
     return (P.K * u - y) / P.tau
 
 

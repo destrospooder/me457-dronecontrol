@@ -9,19 +9,19 @@ import matplotlib.pyplot as plt
 
 def f(t, y, u):
     # mass sprint system state space form:
-    return (P.K * u - y) / P.tau
+    return np.array([y[1], (1 / P.tau) * (P.K * u - y[1])])
 
 
 class Controller:
     def __init__(self):
-        kp = P.kp
-        ki = P.ki
-        kd = P.kd
+        kp = 5
+        ki = 2.5
+        kd = 1.5
         # TODO Look at saturation slope
-        limit = P.emax
+        limit = P.umax
         sigma = P.sigma
         Ts = P.Ts
-        self.controller = PIDControl(kp, ki, kd, limit, sigma, Ts)
+        self.controller = PIDControl(kp, ki, kd, limit, sigma, Ts, flag=False)
 
     def update(self, r, y):
         return self.controller.PID(r, y)
@@ -46,50 +46,32 @@ controller = Controller()
 
 # Simulate step response
 
-r = 10
+r = 1
+y = np.array([0, 0])
 t = 0
-y = 0
-ydot = 0
-u = 0
 
-t_history = [t]
+t_history = [0]
 y_history = [y]
-ydot_history = [ydot]
-u_history = [u]
-
-kp_c = 2
-ki_c = 0.1
-kd_c = 2.5
-e = r - y
-
-error_int = 0
+u_history = [0]
 
 for i in range(P.nsteps):
 
-    error_int += P.Ts/2 * (e + (r - y))
-    e = r - y
-
-    u = (kp_c * e) + (ki_c * error_int) - (kd_c * ydot)
-
-    if abs(u) > P.umax:
-        u = P.umax * np.sign(u)
-
-    ydot = system.update(u)
-    y += P.Ts/2 * (ydot + ydot_history[-1])
+    u = controller.update(r, y.item(0))
+    y = system.update(u)
     t += P.Ts
 
     t_history.append(t)
     y_history.append(y)
-    ydot_history.append(ydot)
     u_history.append(u)
 
 # Plot response y due to step change in r
 plt.close('all')
 
+y_ = np.asarray(y_history)
 
 fig, ax = plt.subplots()
-ax.plot(t_history, y_history, label='Motor Position', color='orange')
-ax.plot(t_history, ydot_history, label='Motor Velocity', color='pink')
+ax.plot(t_history, y_[:,0], label='Motor Position', color='orange')
+#ax.plot(t_history, y_[:,1], label='Motor Velocity', color='pink')
 ax.set_xlabel('Time (s)')
 ax.set_ylabel('Angular Position (rad)')
 plt.axhline(y=r, color='r', linestyle='--', label='Commanded Position')
@@ -99,6 +81,6 @@ plt.legend()
 ax2 = ax.twinx()
 ax2.plot(t_history, u_history, label='Input Voltage', color='green')
 ax2.set_ylabel('Actuation Signal (V)')
-plt.legend()
+plt.legend(loc='lower right')
 plt.show()
 

@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 # f(t, x, u) = (Ku - y) / tau
 
 def f(t, y, u):
-
     return np.array([y[1], (1 / P.tau) * (P.K * u - y[1])])
 
 
@@ -66,7 +65,7 @@ plt.close('all')
 
 fig, ax = plt.subplots()
 ax.plot(t_history, y_[:,0], label='Motor Position', color='orange')
-ax.plot(t_history, y_[:,1], label='Motor Speed', color='pink')
+#ax.plot(t_history, y_[:,1], label='Motor Speed', color='pink')
 ax.set_xlabel('Time (s)')
 ax.set_ylabel('Angular Position (rad)')
 plt.axhline(y=r, color='r', linestyle='--', label='Commanded Position')
