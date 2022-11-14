@@ -12,12 +12,14 @@ nsteps = 135
 # PID controller
 emax = 0.5*K*umax
 zeta = 0.9
-"""
+
 kp = 0.9*umax/emax
 wn = (1 + K*kp)/(2*tau*zeta)
 ki = wn**2 * tau / K
-kd = 0.4
+kd = 0.15
 sigma = 1
+
+
 """
 
 wn = 1.8/0.095
@@ -27,4 +29,9 @@ kd = 0.009
 kp = 2*zeta*wn*(tau)/K
 ki = (wn**2)*(tau)/K
 sigma = 0.01
+"""
+
+kp_pos = 1
+ki_pos = 0
+kd_pos = 0.2
 

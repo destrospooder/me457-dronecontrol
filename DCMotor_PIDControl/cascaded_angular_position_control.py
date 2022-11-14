@@ -46,26 +46,41 @@ controller = Controller()
 
 # Simulate step response
 
-r = 5
+r = 10
 t = 0
 y = 0
+ydot = 0
 u = 0
-
-
-print(P.kp)
-print(P.ki)
 
 t_history = [t]
 y_history = [y]
+ydot_history = [ydot]
 u_history = [u]
 
+kp_c = 2
+ki_c = 0.1
+kd_c = 2.5
+e = r - y
+
+error_int = 0
+
 for i in range(P.nsteps):
-    u = controller.update(r, y)
-    y = system.update(u)
+
+    error_int += P.Ts/2 * (e + (r - y))
+    e = r - y
+
+    u = (kp_c * e) + (ki_c * error_int) - (kd_c * ydot)
+
+    if abs(u) > P.umax:
+        u = P.umax * np.sign(u)
+
+    ydot = system.update(u)
+    y += P.Ts/2 * (ydot + ydot_history[-1])
     t += P.Ts
 
     t_history.append(t)
     y_history.append(y)
+    ydot_history.append(ydot)
     u_history.append(u)
 
 # Plot response y due to step change in r
@@ -73,10 +88,11 @@ plt.close('all')
 
 
 fig, ax = plt.subplots()
-ax.plot(t_history, y_history, label='Motor Speed', color='orange')
+ax.plot(t_history, y_history, label='Motor Position', color='orange')
+ax.plot(t_history, ydot_history, label='Motor Velocity', color='pink')
 ax.set_xlabel('Time (s)')
-ax.set_ylabel('Angular Velocity (rad/s)')
-plt.axhline(y=r, color='r', linestyle='--', label='Commanded Speed')
+ax.set_ylabel('Angular Position (rad)')
+plt.axhline(y=r, color='r', linestyle='--', label='Commanded Position')
 plt.legend()
 
 
