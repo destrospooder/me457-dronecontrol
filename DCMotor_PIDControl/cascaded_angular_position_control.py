@@ -8,19 +8,20 @@ import matplotlib.pyplot as plt
 # f(t, x, u) = (Ku - y) / tau
 
 def f(t, y, u):
-    return (P.K * u - y) / P.tau
+    # mass sprint system state space form:
+    return np.array([y[1], (1 / P.tau) * (P.K * u - y[1])])
 
 
 class Controller:
     def __init__(self):
-        kp = P.kp
-        ki = P.ki
-        kd = P.kd
+        kp = 5
+        ki = 2.5
+        kd = 1.5
         # TODO Look at saturation slope
-        limit = P.emax
+        limit = P.umax
         sigma = P.sigma
         Ts = P.Ts
-        self.controller = PIDControl(kp, ki, kd, limit, sigma, Ts)
+        self.controller = PIDControl(kp, ki, kd, limit, sigma, Ts, flag=False)
 
     def update(self, r, y):
         return self.controller.PID(r, y)
@@ -45,21 +46,17 @@ controller = Controller()
 
 # Simulate step response
 
-r = 5
+r = 1
+y = np.array([0, 0])
 t = 0
-y = 0
-u = 0
 
-
-print(P.kp)
-print(P.ki)
-
-t_history = [t]
+t_history = [0]
 y_history = [y]
-u_history = [u]
+u_history = [0]
 
 for i in range(P.nsteps):
-    u = controller.update(r, y)
+
+    u = controller.update(r, y.item(0))
     y = system.update(u)
     t += P.Ts
 
@@ -70,18 +67,20 @@ for i in range(P.nsteps):
 # Plot response y due to step change in r
 plt.close('all')
 
+y_ = np.asarray(y_history)
 
 fig, ax = plt.subplots()
-ax.plot(t_history, y_history, label='Motor Speed', color='orange')
+ax.plot(t_history, y_[:,0], label='Motor Position', color='orange')
+#ax.plot(t_history, y_[:,1], label='Motor Velocity', color='pink')
 ax.set_xlabel('Time (s)')
-ax.set_ylabel('Angular Velocity (rad/s)')
-plt.axhline(y=r, color='r', linestyle='--', label='Commanded Speed')
+ax.set_ylabel('Angular Position (rad)')
+plt.axhline(y=r, color='r', linestyle='--', label='Commanded Position')
 plt.legend()
 
 
 ax2 = ax.twinx()
 ax2.plot(t_history, u_history, label='Input Voltage', color='green')
 ax2.set_ylabel('Actuation Signal (V)')
-plt.legend()
+plt.legend(loc='lower right')
 plt.show()
 
