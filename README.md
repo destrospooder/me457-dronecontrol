@@ -21,3 +21,5 @@ Log:
 *10/23 - All not good (mostly good). Need to finish `mav_dynamics`, there's some wind stuff there I don't feel like finishing (sick of looking at code), and some thrust stuff too. Wind simulation needs transfer function stuff as well. Updated Aerosonde with E2 Aerosonde Stuff (p. 276 of Beard). The wind simulation parameters Va...Lw, and all the sigmas are from the book, not sure if they're correct (4.4). Also Sohaib says there's a fundamental dynamics problem from week 1 (10/10) which still needs to be solved I believe.* -AT
 
 *10/24 - Got the sim working so that's something. The dynamics are still screwy but we'll get people to look through it.* -BA
+
+*11/16 - Unit tests all passed! PID control for DC motor included. * -SB
