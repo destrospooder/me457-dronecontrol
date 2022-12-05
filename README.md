@@ -22,4 +22,6 @@ Log:
 
 *10/24 - Got the sim working so that's something. The dynamics are still screwy but we'll get people to look through it.* -BA
 
-*11/16 - Unit tests all passed! PID control for DC motor included. * -SB
+*11/16 - Unit tests all passed! PID control for DC motor included.* -SB
+
+*12/5 - Call man fill tuhr.* -BA
