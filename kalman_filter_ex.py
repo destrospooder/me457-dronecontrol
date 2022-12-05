@@ -8,8 +8,12 @@ K = 4.9 # rad/s/V
 tau = 0.085 # 1/s
 
 # Process and measurement noise variance
-Q = 10**2 * np.eye(2) #
-R = np.eye(2) * 0.01**2 # 1 standard dev.
+q = 1000
+r = 10
+Q = q**2 * np.eye(2) #
+#Q = 0 * np.eye(2)
+R = np.eye(2) * r**2
+#R = 0 * np.eye(2)
 
 # Time between measurements, Sampling time, # iters.
 Tm = 0.2 # Time between measurements
