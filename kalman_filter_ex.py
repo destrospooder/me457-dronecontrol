@@ -41,6 +41,7 @@ P0 = R
 
 # Setup "true" system
 Bn = np.hstack((B, np.eye(2)))
+#print('bn', Bn)
 Dn = np.array([0, 0, 0])
 sys_true = ss(A, Bn, C, Dn)
 
@@ -64,7 +65,8 @@ for i in range(nm): # for all measurements
     zeta = standard_normal(size=(2, ns)) * np.sqrt(Q)
     zeta1 = zeta[0]
     zeta2 = zeta[1]
-    un = np.transpose(np.vstack((u,zeta1,zeta2)))
+    #un = np.transpose(np.vstack((u,zeta1,zeta2)))
+    un = np.vstack((u,zeta1,zeta2))
     #un = np.transpose(un)
     print(un)
     #print('zeta', zeta)
