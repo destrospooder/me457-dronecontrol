@@ -18,8 +18,8 @@ ns = 5
 Ts = Tm/ns # sampling time
 
 # Initial conditions
-x0  = 0 # true initial state
-yhat0  = x0 + standard_normal() * np.sqrt(Q) # initial measurement
+x0  = [0,0] # true initial state
+yhat0  = x0[0] + standard_normal() * np.sqrt(Q) # initial measurement
 xhat0 = yhat0 # initial estimated state
 
 # Setup KF system
@@ -62,10 +62,15 @@ for i in range(nm): # for all measurements
     u = np.sin(t) # np.ones(ns) 
     #zeta = standard_normal(ns) * np.sqrt(Q)
     zeta = standard_normal(size=(2, ns)) * np.sqrt(Q)
-    print('zeta', zeta)
-    print('u', u)
+    zeta1 = zeta[0]
+    zeta2 = zeta[1]
+    un = np.transpose(np.vstack((u,zeta1,zeta2)))
+    #un = np.transpose(un)
+    print(un)
+    #print('zeta', zeta)
+    #print('u', u)
     #un = np.concatenate((u,zeta))
-    un = np.vstack((u,zeta))
+    #un = np.vstack((u,zeta))
     #un = np.stack((u, zeta), axis = 3)
     #un = np.hstack((u, zeta))
     y, _, x = lsim(sys_true, un, t, x0)
@@ -76,22 +81,29 @@ for i in range(nm): # for all measurements
     tn = T2
     # store values
     t_history = np.hstack((t_history, np.squeeze(t)))
-    x_true_history = np.hstack((x_true_history, np.squeeze(x)))
+    print('x', x)
+    x1 = x[0]
+    x2 = x[1]
+    x_true_history = np.hstack((x_true_history, x1,x2))
     # Kalman filter
     #  Prediction
     y, _, x = lsim(sys_kf, u, t, xhat0)
     for i in range(ns-1):
         P = Ad * P * Ad + Ts**2 * Q
     # Store vals
-    x_kf_history = np.hstack((x_kf_history, np.squeeze(x)))
+    x_kf_history = np.hstack((x_kf_history, x1,x2))
     #  Correction
     L = P * C / (R + C*P*C)
     x_plus = x[-1] + L*(yn - y[-1])
+    x_plus1 = x_plus[0]
+    x_plus2 = x_plus[1]
+    print(np.shape(x_plus1))
+    #print(np.shape)
     P = (1 - L*C)*P*(1-L*C) + L*R*L
     # Update IC
     xhat0 = x_plus
     t_kf_plus = np.hstack((t_kf_plus, T2))
-    x_kf_plus = np.hstack((x_kf_plus, x_plus))
+    x_kf_plus = np.hstack((x_kf_plus, x_plus1, x_plus2))
 
 fig, ax = plt.subplots()
 ax.plot(t_history, x_true_history, label='true')
