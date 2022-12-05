@@ -3,27 +3,27 @@ from numpy.random import standard_normal
 import matplotlib.pyplot as plt
 from control.matlab import *  # MATLAB-like control toolbox functionality
 
-# DC motor parameters 
-K = 4.9 # rad/s/V 
+# DC motor parameters
+K = 4.9 # rad/s/V
 tau = 0.085 # 1/s
 
 # Process and measurement noise variance
-Q  = 10**2 # 
-R  = 0.01**2 # 1 standard dev.  
+Q = 10**2 * np.eye(2) #
+R = np.eye(2) * 0.01**2 # 1 standard dev.
 
 # Time between measurements, Sampling time, # iters.
 Tm = 0.2 # Time between measurements
 nm = 150  # number of measurements
-ns = 5  
+ns = 5
 Ts = Tm/ns # sampling time
 
 # Initial conditions
 x0  = [0,0] # true initial state
-yhat0  = x0[0] + standard_normal() * np.sqrt(Q) # initial measurement
+yhat0 = x0 + standard_normal() * np.sqrt(Q) # initial measurement
 xhat0 = yhat0 # initial estimated state
 
 # Setup KF system
-A = np.array([[0, 1], 
+A = np.array([[0, 1],
     [0, -1/tau]])
 # A = np.array([0, 1],[0,-1/tau])
 # print(A)
@@ -60,21 +60,12 @@ for i in range(nm): # for all measurements
     T2 += Tm
     # Simulate "true" system for T1 to T2
     t = np.linspace(T1, T2, ns)
-    u = np.sin(t) # np.ones(ns) 
-    #zeta = standard_normal(ns) * np.sqrt(Q)
-    zeta = standard_normal(size=(2, ns)) * np.sqrt(Q)
-    zeta1 = zeta[0]
-    zeta2 = zeta[1]
-    #un = np.transpose(np.vstack((u,zeta1,zeta2)))
-    un = np.vstack((u,zeta1,zeta2))
-    #un = np.transpose(un)
-    print(un)
-    #print('zeta', zeta)
-    #print('u', u)
-    #un = np.concatenate((u,zeta))
-    #un = np.vstack((u,zeta))
-    #un = np.stack((u, zeta), axis = 3)
-    #un = np.hstack((u, zeta))
+    u = np.sin(t) # np.ones(ns)
+    zeta = np.matmul(standard_normal(size=(ns, 2)), np.sqrt(Q))
+    zeta1 = zeta[:, 0]
+    zeta2 = zeta[:, 1]
+    un = np.stack((u, zeta1, zeta2),axis=1)
+
     y, _, x = lsim(sys_true, un, t, x0)
     #  add noise to sensor measurement
     yn = y[-1] + standard_normal() * np.sqrt(R)
@@ -83,36 +74,53 @@ for i in range(nm): # for all measurements
     tn = T2
     # store values
     t_history = np.hstack((t_history, np.squeeze(t)))
-    print('x', x)
-    x1 = x[0]
-    x2 = x[1]
-    x_true_history = np.hstack((x_true_history, x1,x2))
+
+    x_true_history = np.vstack((x_true_history, np.squeeze(x)))
+
     # Kalman filter
     #  Prediction
-    y, _, x = lsim(sys_kf, u, t, xhat0)
+    y, _, x = lsim(sys_kf, u, t, xhat0[0])
     for i in range(ns-1):
-        P = Ad * P * Ad + Ts**2 * Q
+        P = np.matmul(np.matmul(Ad, P), np.transpose(Ad)) + Ts**2 * Q
     # Store vals
-    x_kf_history = np.hstack((x_kf_history, x1,x2))
+
+    x_kf_history = np.vstack((np.squeeze(x_kf_history), np.squeeze(x)))
+
     #  Correction
-    L = P * C / (R + C*P*C)
-    x_plus = x[-1] + L*(yn - y[-1])
-    x_plus1 = x_plus[0]
-    x_plus2 = x_plus[1]
-    print(np.shape(x_plus1))
+
+    L = np.matmul(P, C) / (R + np.matmul(np.matmul(C, P), np.transpose(C)))
+    x_plus = np.add(x[-1], np.matmul(L, (np.subtract(yn, y[-1]))))
     #print(np.shape)
-    P = (1 - L*C)*P*(1-L*C) + L*R*L
+    #P = (1 - L*C)*P*(1-L*C) + L*R*L
+    P = np.add(np.matmul((np.matmul(np.subtract(np.eye(2), np.matmul(L, C)), P)), np.transpose(np.subtract(np.eye(2), np.matmul(L, C)))), np.matmul(np.matmul(L, R), np.transpose(L)))
     # Update IC
     xhat0 = x_plus
-    t_kf_plus = np.hstack((t_kf_plus, T2))
-    x_kf_plus = np.hstack((x_kf_plus, x_plus1, x_plus2))
+
+    print(np.shape(t_kf_plus))
+    print(np.shape(T2))
+
+"""    t_kf_plus = np.vstack((t_kf_plus, T2))
+    x_kf_plus = np.vstack((x_kf_plus, x_plus))"""
 
 fig, ax = plt.subplots()
-ax.plot(t_history, x_true_history, label='true')
-ax.plot(t_history, x_kf_history, label='KF')
-ax.plot(t_kf_plus, x_kf_plus, 'rs',label='correction')
+x_kf_history = x_kf_history[:-1, :]
+
+ax.plot(t_history, x_true_history[:, 0], label='true position')
+ax.plot(t_history, x_kf_history[:, 0], label='KF position')
+print(np.shape(t_kf_plus))
+print(np.shape(x_kf_plus))
+#ax.plot(t_kf_plus, x_kf_plus, 'rs',label='correction')
 ax.set_xlabel('t [s]')
-ax.set_ylabel(r'$\omega$ [rad/s]')
+ax.set_ylabel(r'$\theta$ [rad]')
 ax.legend()
 plt.show()
 
+fig, ax1 = plt.subplots()
+
+ax1.plot(t_history, x_true_history[:, 1], label='true velocity')
+ax1.plot(t_history, x_kf_history[:, 1], label='KF velocity')
+#ax.plot(t_kf_plus, x_kf_plus, 'rs',label='correction')
+ax1.set_xlabel('t [s]')
+ax1.set_ylabel(r'$\omega$ [rad/s]')
+ax1.legend()
+plt.show()
