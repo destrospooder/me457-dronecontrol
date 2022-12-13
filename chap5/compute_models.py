@@ -104,7 +104,7 @@ def compute_tf_model(mav, trim_state, trim_input):
     # CHAPTER 5: SLIDE 19: LEC 7-8 LINEAR MODELS
     
     # REVIEW AV1
-    a_V1 = ((MAV.rho * Va_trim * MAV.S) / (MAV.mass)) * (MAV.C_D_0 + MAV.C_D_alpha * alpha_trim + MAV.C_D_delta_e * delta_trim) - dT_dVa(delta_trim, Va_trim)/(MAV.mass)
+    a_V1 = ((MAV.rho * Va_trim * MAV.S_wing) / (MAV.mass)) * (MAV.C_D_0 + MAV.C_D_alpha * alpha_trim + MAV.C_D_delta_e * delta_trim) - dT_dVa(delta_trim, Va_trim)/(MAV.mass)
     a_V2 = dT_ddelta_t(delta_trim, Va_trim) / (MAV.mass)
     a_V3 = MAV.gravity * np.cos(theta_trim - alpha_trim)
 
@@ -112,6 +112,8 @@ def compute_tf_model(mav, trim_state, trim_input):
 
 
 def compute_ss_model(mav, trim_state, trim_input):
+    # in chpt 5. will need to make like 20ish vars to go into the A matrix
+    
     x_euler = euler_state(trim_state)
     A = 
     B = 
