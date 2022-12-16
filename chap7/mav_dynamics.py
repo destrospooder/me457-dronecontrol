@@ -138,8 +138,8 @@ class MavDynamics:
         M = 0.0289644 #kg/mol 
         self._sensors.abs_pressure = P0 * (T0/(T0 + L0 * -self.true_state.altitude)) ** (MAV.gravity * M /(R_air * L0))
         self._pressure_eta_diff = standard_normal()
-        # TEMPERATURE BIAS DRIFT NEEDS TO BE ADDED
-        self._sensors.diff_pressure = 1/2 * MAV.rho * self._Va ** 2 + self._pressure_eta_diff
+        self._temperature_bias_drift = 0
+        self._sensors.diff_pressure = 1/2 * MAV.rho * self._Va ** 2 + self._pressure_eta_diff + self._temperature_bias_drift
         # simulate GPS sensor
         if self._t_gps >= SENSOR.ts_gps:
             self._gps_eta_n = standard_normal()
