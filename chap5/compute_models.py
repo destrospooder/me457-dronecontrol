@@ -155,11 +155,6 @@ def compute_ss_model(mav, trim_state, trim_input):
     CL = (1-Sigma)*(MAV.C_L_0 + MAV.C_L_alpha*alpha_trim)+Sigma*(2.0*np.sign(alpha_trim)*np.sin(alpha_trim)**2*np.cos(alpha_trim))
     
     Cx = -CD * np.cos(alpha_trim) + CL * np.sin(alpha_trim)
-    Cxq = -MAV.C_D_q * np.cos(alpha_trim) + MAV.C_L_q * np.sin(alpha_trim)
-    Cxde = -MAV.C_D_delta_e * np.cos(alpha_trim) + MAV.C_L_delta_e * np.sin(alpha_trim)
-    Cz = -CD * np.sin(alpha_trim) - CL * np.cos(alpha_trim)
-    Czq = -MAV.C_D_q * np.sin(alpha_trim) - MAV.C_L_q * np.cos(alpha_trim)
-    Czde = -MAV.C_D_delta_e * np.sin(alpha_trim) - MAV.C_L_delta_e * np.cos(alpha_trim)
     
     Xu = u_star*MAV.rho*MAV.S_wing*(Cx)
     Xw = 0.0
