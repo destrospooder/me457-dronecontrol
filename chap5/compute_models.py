@@ -104,8 +104,10 @@ def compute_tf_model(mav, trim_state, trim_input):
     # CHAPTER 5: SLIDE 19: LEC 7-8 LINEAR MODELS
     
     # REVIEW AV1
-    a_V1 = ((MAV.rho * Va_trim * MAV.S_wing) / (MAV.mass)) * (MAV.C_D_0 + MAV.C_D_alpha * alpha_trim + MAV.C_D_delta_e * delta_trim) - dT_dVa(delta_trim, Va_trim)/(MAV.mass)
-    a_V2 = dT_ddelta_t(delta_trim, Va_trim) / (MAV.mass)
+    a_V1 = ((MAV.rho * Va_trim * MAV.S_wing) / MAV.mass) * \
+           (MAV.C_D_0 + MAV.C_D_alpha * alpha_trim + MAV.C_D_delta_e * delta_trim) - \
+           dT_dVa(delta_trim, Va_trim) / MAV.mass
+    a_V2 = dT_ddelta_t(mav, delta_trim, Va_trim) / MAV.mass
     a_V3 = MAV.gravity * np.cos(theta_trim - alpha_trim)
 
     return Va_trim, alpha_trim, theta_trim, a_phi1, a_phi2, a_theta1, a_theta2, a_theta3, a_V1, a_V2, a_V3
@@ -238,8 +240,14 @@ def euler_state(x_quat):
     # to x_euler with attitude represented by Euler angles
 
     # THIS MIGHT BE VERY WRONG, BUT I THINK IT'S THE RIGHT IDEA
+
+    # BA - I think you're good here. Did a bit of redefining for clarity.
+
     e = np.array([x_quat.item(6), x_quat.item(7), x_quat.item(8), x_quat.item(9)])
-    [phi, theta, psi] = Quaternion2Euler(e)
+    angles = np.array([Quaternion2Euler(e)])
+    print(angles)
+
+
 
     x_euler = np.array([[x_quat.item(0)],
                         [x_quat.item(1)],
@@ -254,7 +262,6 @@ def euler_state(x_quat):
                         [x_quat.item(11)],
                         [x_quat.item(12)]
                         ])
-
     return x_euler
 
 def quaternion_state(x_euler):
@@ -282,14 +289,29 @@ def quaternion_state(x_euler):
 def f_euler(mav, x_euler, delta):
     # return 12x1 dynamics (as if state were Euler state)
     # compute f at euler_state
-    
-    f_euler_ = 
+
+    xq = quaternion_state(x_euler)
+    mav._state = xq
+    mav._update_velocity_data()
+    fm = mav._forces_moments(delta)
+    fq = mav._derivatives(xq, fm)
+    fq[2, 0] = -1 * fq[2, 0] # BA - because of that weird p_down dot vs h dot thing
+
+    q0 = xq[6:10]
+    Aq = np.zeros((3,4))
+    for i in range(4):
+        eps = 0.001
+        q_eps = np.zeros_like(q0)
+        q_eps[i, 0] = eps
+        q_eps = q_eps + q0
+        Aq[:, i] = ((np.array([Quaternion2Euler(q_eps)]).T - np.array([Quaternion2Euler(q0)]).T) / eps)[:, 0]
+    f_euler_ = np.stack(([fq[0:6], np.matmul(Aq, fq[6:10]), fq[10:13]]))
     return f_euler_
 
 def df_dx(mav, x_euler, delta):
     # take partial of f_euler with respect to x_euler
     # PAGE 80, 84?
-    A = 
+    eps =
     return A
 
 
@@ -309,7 +331,7 @@ def dT_dVa(mav, Va, delta_t):
 
 def dT_ddelta_t(mav, Va, delta_t):
     # returns the derivative of motor thrust with respect to delta_t
-    eps = 
+    eps = EPS
     T_eps, Q_eps = #mav._motor_thrust_torque()
     T, Q = #mav._motor_thrust_torque()
     return (T_eps - T) / eps
