@@ -26,7 +26,6 @@ import chap5.model_coef as M
 class Autopilot:
     def __init__(self, ts_control):
         self.Ts = ts_control
-
         self.integratorCourse = 0
         self.integratorAltitude = 0
         self.integratorAirspeed = 0
@@ -40,7 +39,8 @@ class Autopilot:
                     concatenate((CrLat, zeros((1, 1))), axis=1)),
             axis=0)
         BBlat = concatenate((M.B_lat, zeros((1, 2))), axis=0)
-        Qlat = diag([0.001, 0.01, 0.1, 100, 1, 100]) # v, p, r, phi, chi, intChi
+        #Qlat = diag([0.001, 0.01, 0.1, 100, 1, 100]) # v, p, r, phi, chi, intChi
+        Qlat = diag([1, 1, 1, 1, 1, 1])
         Rlat = diag([1, 1]) #a, r
         Plat = solve_continuous_are(AAlat, BBlat, Qlat, Rlat)
         self.Klat = inv(Rlat) @ BBlat.T @ Plat

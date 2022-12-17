@@ -4,6 +4,8 @@
     <list default="true" id="73e490ca-bc9f-467b-b369-e8770df5c18f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/chap6/autopilot.py" beforeDir="false" afterPath="$PROJECT_DIR$/chap6/autopilot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/chap6/mavsim_chap6.py" beforeDir="false" afterPath="$PROJECT_DIR$/chap6/mavsim_chap6.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parameters/aerosonde_parameters.py" beforeDir="false" afterPath="$PROJECT_DIR$/parameters/aerosonde_parameters.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

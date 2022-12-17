@@ -15,7 +15,7 @@ from chap3.data_viewer import DataViewer
 from chap4.mav_dynamics import MavDynamics
 from chap4.wind_simulation import WindSimulation
 from chap6.autopilot import Autopilot
-#from chap6.autopilot_tecs import Autopilot
+# from chap6.autopilot_tecs import Autopilot
 from tools.signals import Signals
 
 # initialize the visualization
@@ -36,18 +36,18 @@ autopilot = Autopilot(SIM.ts_simulation)
 # autopilot commands
 from message_types.msg_autopilot import MsgAutopilot
 commands = MsgAutopilot()
-Va_command = Signals(dc_offset=25.0,
-                     amplitude=3.0,
+Va_command = Signals(dc_offset=0,
+                     amplitude=0,
                      start_time=2.0,
                      frequency=0.01)
-altitude_command = Signals(dc_offset=100.0,
-                           amplitude=10.0,
-                           start_time=0.0,
+altitude_command = Signals(dc_offset=0,
+                           amplitude=1,
+                           start_time=100.0,
                            frequency=0.02)
-course_command = Signals(dc_offset=np.radians(180),
-                         amplitude=np.radians(45),
-                         start_time=5.0,
-                         frequency=0.015)
+course_command = Signals(dc_offset=np.radians(0),
+                         amplitude=np.radians(0),
+                         start_time=0,
+                         frequency=0.1)
 
 # initialize the simulation time
 sim_time = SIM.start_time
@@ -71,16 +71,13 @@ while sim_time < SIM.end_time:
 
     # -------update viewer-------------
     mav_view.update(mav.true_state)  # plot body of MAV
-    data_view.update(mav.true_state,  # true states
-                     estimated_state,  # estimated states
-                     commanded_state,  # commanded states
-                     delta,  # input to aircraft
-                     SIM.ts_simulation)
+
     if VIDEO is True:
         video.update(sim_time)
 
     # -------increment time-------------
     sim_time += SIM.ts_simulation
+
 
 if VIDEO is True:
     video.close()

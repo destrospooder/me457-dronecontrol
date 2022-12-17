@@ -10,9 +10,9 @@ from tools.rotations import Euler2Quaternion
 north0 = 0.  # initial north position
 east0 = 0.  # initial east position
 down0 = 0.  # initial down position
-u0 = 0.  # initial velocity along body x-axis
-v0 = 0.  # initial velocity along body y-axis
-w0 = 0.  # initial velocity along body z-axis
+u0 = 5.  # initial velocity along body x-axis
+v0 = 5.  # initial velocity along body y-axis
+w0 = 5.  # initial velocity along body z-axis
 phi0 = 0.  # initial roll angle
 theta0 = 0.  # initial pitch angle
 psi0 = 0.0  # initial yaw angle
