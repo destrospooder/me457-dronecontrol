@@ -104,16 +104,16 @@ class MavDynamics:
     def sensors(self):
         "Return value of sensors on MAV: gyros, accels, absolute_pressure, dynamic_pressure, GPS"
         phi, theta, psi = Quaternion2Euler(self._state[6:10])
-        fx = self._forces_moments[0]
-        fy = self._forces_moments[1]
-        fz = self._forces_moments[2]
+        fx = self._forces[0]
+        fy = self._forces[1]
+        fz = self._forces[2]
         # simulate rate gyros(units are rad / sec)
         self._gyro_eta_x = standard_normal()
         self._gyro_eta_y = standard_normal()
         self._gyro_eta_z = standard_normal()
-        self._sensors.gyro_x = self.true_state.p + self._gyro_eta_x
-        self._sensors.gyro_y = self.true_state.q + self._gyro_eta_y
-        self._sensors.gyro_z = self.true_state.r + self._gyro_eta_z
+        self._sensors.gyro_x = self.true_state.p + SENSOR.gyro_sigma * self._gyro_eta_x
+        self._sensors.gyro_y = self.true_state.q + SENSOR.gyro_sigma * self._gyro_eta_y
+        self._sensors.gyro_z = self.true_state.r + SENSOR.gyro_sigma * self._gyro_eta_z
         # simulate accelerometers(units of g)
         self._sensors.accel_x = (fx / MAV.mass) + MAV.gravity * np.sin(theta) + self._sensors.gyro_x
         self._sensors.accel_y = (fy / MAV.mass) - MAV.gravity * np.cos(theta) * np.sin(phi) + self._sensors.gyro_y
@@ -121,15 +121,15 @@ class MavDynamics:
         # simulate magnetometers
         # magnetic field in provo has magnetic declination of 12.5 degrees
         # and magnetic inclination of 66 degrees
-        R_mag = 
+            #R_mag = 
         # magnetic field in inertial frame: unit vector
-        mag_inertial = 
-        R =  # body to inertial
+            #mag_inertial = 
+            #R =  # body to inertial
         # magnetic field in body frame: unit vector
-        mag_body = 
-        self._sensors.mag_x = 
-        self._sensors.mag_y = 
-        self._sensors.mag_z = 
+            # mag_body = 
+            # self._sensors.mag_x = 
+            # self._sensors.mag_y = 
+            # self._sensors.mag_z = 
         # simulate pressure sensors
         P0 = 101325
         T0 = 288.15 #K
@@ -148,12 +148,12 @@ class MavDynamics:
             self._gps_eta_v = standard_normal()
             self._gps_eta_course = standard_normal()
 
-            self._sensors.gps_n = 
-            self._sensors.gps_e = 
-            self._sensors.gps_h = 
+            self._sensors.gps_n =  self._state.item(0) + self._gps_eta_n
+            self._sensors.gps_e =  self._state.item(1) + self._gps_eta_e
+            self._sensors.gps_h = -self._state.item(2) + self._gps_eta_h
             
             self._sensors.gps_Vg = np.sqrt(((self._Va * np.cos(psi) + self._wind.item(0)) ** 2)  + (self._Va * np.sin(psi) + self._wind.item(1))) + self._gps_eta_v
-            self._sensors.gps_course = 
+            self._sensors.gps_course = np.arctan2(self._Va * np.sin(psi) + self._wind.item(1) ,self._Va*np.cos(psi)+self._wind.item(0)) + SENSOR.gps_course_sigma*np.random.randn()
             self._t_gps = 0.
         else:
             self._t_gps += self._ts_simulation
