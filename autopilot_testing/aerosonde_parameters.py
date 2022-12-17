@@ -1,7 +1,7 @@
 import sys
 sys.path.append('..')
 import numpy as np
-from tools.rotations import Euler2Quaternion
+from rotations import Euler2Quaternion
 
 ######################################################################################
                 #   Initial Conditions
@@ -10,7 +10,7 @@ from tools.rotations import Euler2Quaternion
 north0 = 0.  # initial north position
 east0 = 0.  # initial east position
 down0 = 0.  # initial down position
-u0 = 1.  # initial velocity along body x-axis
+u0 = 25.  # initial velocity along body x-axis
 v0 = 0.  # initial velocity along body y-axis
 w0 = 0.  # initial velocity along body z-axis
 phi0 = 0.  # initial roll angle

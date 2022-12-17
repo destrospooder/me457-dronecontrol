@@ -41,13 +41,13 @@ Va_command = Signals(dc_offset=0,
                      start_time=2.0,
                      frequency=0.01)
 altitude_command = Signals(dc_offset=0,
-                           amplitude=1,
-                           start_time=100.0,
-                           frequency=0.02)
+                           amplitude=0,
+                           start_time=0,
+                           frequency=0.0001)
 course_command = Signals(dc_offset=np.radians(0),
                          amplitude=np.radians(0),
-                         start_time=0,
-                         frequency=0.1)
+                         start_time=100,
+                         frequency=0.01)
 
 # initialize the simulation time
 sim_time = SIM.start_time

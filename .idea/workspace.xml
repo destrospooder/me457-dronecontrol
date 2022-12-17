@@ -2,6 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="73e490ca-bc9f-467b-b369-e8770df5c18f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/autopilot_testing/aerosonde_parameters.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/autopilot_testing/autopilot.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/autopilot_testing/control_parameters.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/autopilot_testing/model_coef.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/autopilot_testing/msg_autopilot.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/autopilot_testing/msg_delta.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/autopilot_testing/msg_state.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/autopilot_testing/rotations.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/autopilot_testing/signals.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/autopilot_testing/test" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/autopilot_testing/test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/autopilot_testing/wrap.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/chap6/autopilot.py" beforeDir="false" afterPath="$PROJECT_DIR$/chap6/autopilot.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/chap6/mavsim_chap6.py" beforeDir="false" afterPath="$PROJECT_DIR$/chap6/mavsim_chap6.py" afterDir="false" />
@@ -29,7 +41,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "last_opened_file_path": "C:/Users/Sohaib Bhatti/PycharmProjects/me457_dronecontrol",
+    "last_opened_file_path": "C:/Users/Sohaib Bhatti/PycharmProjects/me457_dronecontrol/autopilot_testing",
     "settings.editor.selected.configurable": "advanced.settings"
   },
   "keyToStringList": {
@@ -38,7 +50,7 @@
     ]
   }
 }]]></component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.mavsim_chap6">
     <configuration name="mavsim_chap4" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="me457_dronecontrol" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -60,6 +72,31 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="mavsim_chap6" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="me457_dronecontrol" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\Sohaib Bhatti\PycharmProjects\me457_dronecontrol\venv\Scripts\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/chap6" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/chap6/mavsim_chap6.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.mavsim_chap4" />
+      <item itemvalue="Python.mavsim_chap6" />
+    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
