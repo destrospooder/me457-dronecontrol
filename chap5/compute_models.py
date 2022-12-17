@@ -94,11 +94,11 @@ def compute_tf_model(mav, trim_state, trim_input):
     delta_trim = mav._delta
 
     # define transfer function constants
-    a_phi1 = 
-    a_phi2 = 
-    a_theta1 = 
-    a_theta2 = 
-    a_theta3 = 
+    a_phi1 = -1/2 * MAV.rho * (Va_trim ** 2) *  MAV.S_wing * MAV.b * MAV.C_p_p * MAV.b / (2 * Va_trim)
+    a_phi2 = 1/2 * MAV.rho * (Va_trim ** 2) *  MAV.S_wing * MAV.b * MAV.C_p_delta_a
+    a_theta1 = -((MAV.rho * Va_trim ** 2 * MAV.c * MAV.S_wing) / (2 * MAV.Jy)) * MAV.C_m_q
+    a_theta2 = -((MAV.rho * Va_trim ** 2 * MAV.c * MAV.S_wing) / (2 * MAV.Jy)) * MAV.C_m_alpha
+    a_theta3 = ((MAV.rho * Va_trim ** 2 * MAV.c * MAV.S_wing) / (2 * MAV.Jy)) * MAV.C_m_delta_e
 
     # Compute transfer function coefficients using new propulsion model
     # CHAPTER 5: SLIDE 19: LEC 7-8 LINEAR MODELS
@@ -107,7 +107,7 @@ def compute_tf_model(mav, trim_state, trim_input):
     a_V1 = ((MAV.rho * Va_trim * MAV.S_wing) / (MAV.mass)) * (MAV.C_D_0 + MAV.C_D_alpha * alpha_trim + MAV.C_D_delta_e * delta_trim) - dT_dVa(delta_trim, Va_trim)/(MAV.mass)
     a_V2 = dT_ddelta_t(delta_trim, Va_trim) / (MAV.mass)
     a_V3 = MAV.gravity * np.cos(theta_trim - alpha_trim)
-
+    
     return Va_trim, alpha_trim, theta_trim, a_phi1, a_phi2, a_theta1, a_theta2, a_theta3, a_V1, a_V2, a_V3
 
 
@@ -128,13 +128,17 @@ def compute_ss_model(mav, trim_state, trim_input):
 def euler_state(x_quat):
     # convert state x with attitude represented by quaternion
     # to x_euler with attitude represented by Euler angles
-    x_euler = 
+
+    # THIS MIGHT BE VERY WRONG, BUT I THINK IT'S THE RIGHT IDEA
+    x_euler = Quaternion2Euler(x_quat)
     return x_euler
 
 def quaternion_state(x_euler):
     # convert state x_euler with attitude represented by Euler angles
     # to x_quat with attitude represented by quaternions
-    x_quat = 
+
+    # THIS MIGHT BE VERY WRONG, BUT I THINK IT'S THE RIGHT IDEA
+    x_quat = Euler2Quaternion(x_euler)
     return x_quat
 
 def f_euler(mav, x_euler, delta):
@@ -146,12 +150,14 @@ def f_euler(mav, x_euler, delta):
 
 def df_dx(mav, x_euler, delta):
     # take partial of f_euler with respect to x_euler
+    # PAGE 80, 84?
     A = 
     return A
 
 
 def df_du(mav, x_euler, delta):
     # take partial of f_euler with respect to input
+    # PAGE 80, 84?
     B = 
     return B
 
