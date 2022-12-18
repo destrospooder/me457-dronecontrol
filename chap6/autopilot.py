@@ -145,14 +145,14 @@ class Autopilot:
         # CHAPTER 6: SLIDE 25
         # lateral autopilot
         chi_c = wrap(cmd.course_command, state.chi )
-        phi_c = self.saturate(cmd.phi_feedforward + self.course_from_roll.update(chi_c, state.chi) - np.radians(30), np.radians(30))
+        phi_c = self.saturate(cmd.phi_feedforward + self.course_from_roll.update(chi_c, state.chi), - np.radians(30), np.radians(30))
         delta_a = self.roll_from_aileron.update(phi_c, state.phi, state.p)
         delta_r = self.yaw_damper.update(state.r)
 
         # longitudinal autopilot
         # saturate the altitude command
         altitude_c = cmd.altitude_command # BA - honestly this isn't necessary if we just refer to cmd.altitude_command
-        theta_c = self.altitude_from_pitch.update(altitude_c, state.h)
+        theta_c = self.altitude_from_pitch.update(altitude_c, state.altitude)
         delta_e = self.pitch_from_elevator.update(theta_c, state.theta, state.q)
         delta_t = self.airspeed_from_throttle.update(cmd.airspeed_command, state.Va)
         delta_t = self.saturate(delta_t, 0.0, 1.0)
@@ -169,6 +169,13 @@ class Autopilot:
         self.commanded_state.chi = cmd.course_command
         return delta, self.commanded_state
 
-        def saturate(self, input, low_limit, up_limit)
+    def saturate(self, input, low_limit, up_limit):
+        if input <= low_limit:
+            output = low_limit
+        elif input >= up_limit:
+            output = up_limit
+        else:
+            output = input
+        return output
 
 
