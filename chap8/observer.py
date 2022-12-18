@@ -293,6 +293,9 @@ def jacobian(fun, x, measurement, state):
     J = np.zeros((m, n))
     for i in range(0, n):
         x_eps = np.copy(x)
+        print('xeps', x_eps)
+        print(i)
+        print('xeps[i][0]', x_eps[i][0])
         x_eps[i][0] = x_eps[i][0] + eps
         f_eps = fun(x_eps, measurement, state)
         df = (f_eps - f) / eps
