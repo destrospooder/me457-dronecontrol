@@ -104,10 +104,13 @@ def compute_tf_model(mav, trim_state, trim_input):
     # CHAPTER 5: SLIDE 19: LEC 7-8 LINEAR MODELS
     
     # REVIEW AV1
+    # PAGE 94 TB?
     a_V1 = ((MAV.rho * Va_trim * MAV.S_wing) / MAV.mass) * \
            (MAV.C_D_0 + MAV.C_D_alpha * alpha_trim + MAV.C_D_delta_e * delta_trim) - \
-           dT_dVa(delta_trim, Va_trim) / MAV.mass
-    a_V2 = dT_ddelta_t(mav, delta_trim, Va_trim) / MAV.mass
+            (MAV.rho * MAV.S_prop * MAV.C_prop * Va_trim / MAV.mass)
+           #dT_dVa(delta_trim, Va_trim) / MAV.mass # AT : Not sure where I got this from (slides?) but the dt_dtva stuff is incorrect
+    #a_V2 = dT_ddelta_t(mav, delta_trim, Va_trim) / MAV.mass
+    a_V2 = (MAV.rho * MAV.S_prop * MAV.C_prop * MAV.k_motor ** 2 ) / MAV.mass
     a_V3 = MAV.gravity * np.cos(theta_trim - alpha_trim)
 
     return Va_trim, alpha_trim, theta_trim, a_phi1, a_phi2, a_theta1, a_theta2, a_theta3, a_V1, a_V2, a_V3
@@ -247,17 +250,15 @@ def euler_state(x_quat):
     angles = np.array([Quaternion2Euler(e)])
     print(angles)
 
-
-
     x_euler = np.array([[x_quat.item(0)],
                         [x_quat.item(1)],
                         [x_quat.item(2)],
                         [x_quat.item(3)],
                         [x_quat.item(4)],
                         [x_quat.item(5)],
-                        [phi],
-                        [theta],
-                        [psi],
+                        [angles[0]], # AT changed these to angles[0], instead of phi, theta, psi (undefined vars)
+                        [angles[1]],
+                        [angles[2]],
                         [x_quat.item(10)],
                         [x_quat.item(11)],
                         [x_quat.item(12)]
@@ -308,30 +309,30 @@ def f_euler(mav, x_euler, delta):
     f_euler_ = np.stack(([fq[0:6], np.matmul(Aq, fq[6:10]), fq[10:13]]))
     return f_euler_
 
-def df_dx(mav, x_euler, delta):
-    # take partial of f_euler with respect to x_euler
-    # PAGE 80, 84?
-    eps =
-    return A
+# def df_dx(mav, x_euler, delta):
+#     # take partial of f_euler with respect to x_euler
+#     # PAGE 80, 84?
+#     eps =
+#     return A
 
 
-def df_du(mav, x_euler, delta):
-    # take partial of f_euler with respect to input
-    # PAGE 80, 84?
-    B = 
-    return B
+# def df_du(mav, x_euler, delta):
+#     # take partial of f_euler with respect to input
+#     # PAGE 80, 84?
+#     B = 
+#     return B
 
+# 
+# def dT_dVa(mav, Va, delta_t):
+#     # returns the derivative of motor thrust with respect to Va
+#     eps = 
+#     T_eps, Q_eps = #mav._motor_thrust_torque()
+#     T, Q = #mav._motor_thrust_torque()
+#     return (T_eps - T) / eps
 
-def dT_dVa(mav, Va, delta_t):
-    # returns the derivative of motor thrust with respect to Va
-    eps = 
-    T_eps, Q_eps = #mav._motor_thrust_torque()
-    T, Q = #mav._motor_thrust_torque()
-    return (T_eps - T) / eps
-
-def dT_ddelta_t(mav, Va, delta_t):
-    # returns the derivative of motor thrust with respect to delta_t
-    eps = EPS
-    T_eps, Q_eps = #mav._motor_thrust_torque()
-    T, Q = #mav._motor_thrust_torque()
-    return (T_eps - T) / eps
+# def dT_ddelta_t(mav, Va, delta_t):
+#     # returns the derivative of motor thrust with respect to delta_t
+#     eps = EPS
+#     T_eps, Q_eps = #mav._motor_thrust_torque()
+#     T, Q = #mav._motor_thrust_torque()
+#     return (T_eps - T) / eps
