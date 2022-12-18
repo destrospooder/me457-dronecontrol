@@ -15,15 +15,9 @@ from chap6.pd_control_with_rate import PDControlWithRate
 from message_types.msg_state import MsgState
 from message_types.msg_delta import MsgDelta
 
-import sys
-import numpy as np
-from numpy import array, sin, cos, radians, concatenate, zeros, diag
-from scipy.linalg import solve_continuous_are, inv
-sys.path.append('..')
-import parameters.control_parameters as AP
-import chap5.model_coef as M
+# BA - Sohaib I'm scared what monster did you create here there's sample code in the slides D:
 
-class Autopilot:
+'''class Autopilot:
     def __init__(self, ts_control):
         self.Ts = ts_control
         self.integratorCourse = 0
@@ -111,9 +105,9 @@ def saturate(input, low_limit, up_limit):
         output = up_limit
     else:
         output = input
-    return output
+    return output '''
 
-"""class Autopilot:
+class Autopilot:
     def __init__(self, ts_control):
         # instantiate lateral controllers
         self.roll_from_aileron = PDControlWithRate(
@@ -157,9 +151,8 @@ def saturate(input, low_limit, up_limit):
 
         # longitudinal autopilot
         # saturate the altitude command
-        #altitude_c = NOT IN THE SLIDES, REPLACED WITH H_C
-        h_c = self.saturate(cmd.altitude_command, state.h - AP.altitude_zone, state.h + AP.altitude_zone)
-        theta_c = self.altitude_from_pitch.update(h_c, state.h)
+        altitude_c = cmd.altitude_command # BA - honestly this isn't necessary if we just refer to cmd.altitude_command
+        theta_c = self.altitude_from_pitch.update(altitude_c, state.h)
         delta_e = self.pitch_from_elevator.update(theta_c, state.theta, state.q)
         delta_t = self.airspeed_from_throttle.update(cmd.airspeed_command, state.Va)
         delta_t = self.saturate(delta_t, 0.0, 1.0)
@@ -175,6 +168,7 @@ def saturate(input, low_limit, up_limit):
         self.commanded_state.theta = theta_c
         self.commanded_state.chi = cmd.course_command
         return delta, self.commanded_state
-"""
+
+        def saturate(self, input, low_limit, up_limit)
 
 
