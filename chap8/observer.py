@@ -46,7 +46,7 @@ class Observer:
 
         # invert sensor model to get altitude and airspeed
         self.estimated_state.altitude = self.lpf_abs.update(measurement.abs_pressure) / (MAV.rho * MAV.gravity)
-        self.estimated_state.Va = np.sqrt(2 / MAV.rrho * self.lpf_diff.update(measurement.diff_pressure))
+        self.estimated_state.Va = np.sqrt(2 / MAV.rho * self.lpf_diff.update(measurement.diff_pressure))
 
         # estimate phi and theta with simple ekf
         self.attitude_ekf.update(measurement, self.estimated_state)
@@ -138,7 +138,7 @@ class EkfAttitude:
             # propagate model
             self.xhat = self.xhat + self.Ts * self.f(self.xhat, measurement, state)
             # compute Jacobian
-            A = jacobian(self.f, self.xhat, state)
+            A = jacobian(self.f, self.xhat, measurement, state)
 
             # compute G matrix for gyro noise
             G = np.array([1, np.sin(phi) * np.tan(theta), np.cos(phi * np.tan(theta))],
@@ -179,7 +179,8 @@ class EkfPosition:
         self.gps_e_old = 9999
         self.gps_Vg_old = 9999
         self.gps_course_old = 9999
-        self.pseudo_threshold = stats.chi2.isf()
+        #self.pseudo_threshold = stats.chi2.isf() # AT - THIS LINE WAS GIVING PROBLEMS, SO I JUST MADE IT A CONSTANT. DOUBT CONSTANT WILL WORK LONG TERM.
+        self.pseudo_threshold = 3
         self.gps_threshold = 100000 # don't gate GPS
 
     def update(self, measurement, state):
@@ -292,7 +293,7 @@ def jacobian(fun, x, measurement, state):
     J = np.zeros((m, n))
     for i in range(0, n):
         x_eps = np.copy(x)
-        x_eps[i][0] += eps
+        x_eps[i][0] = x_eps[i][0] + eps
         f_eps = fun(x_eps, measurement, state)
         df = (f_eps - f) / eps
         J[:, i] = df[:, 0]

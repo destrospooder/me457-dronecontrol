@@ -13,21 +13,20 @@ from message_types.msg_delta import MsgDelta
 
 def compute_trim(mav, Va, gamma):
     # define initial state and input
-    e0 = Euler2Quaternion(0., gamma, 0.)
-    state0 = np.array([[],  # pn
-                   [],  # pe
-                   [],  # pd
-                   [],  # u
-                   [],  # v
-                   [],  # w
-                   [],  # e0
-                   [],  # e1
-                   [],  # e2
-                   [],  # e3
-                   [],  # p
-                   [],  # q
-                   []   # r
-                   ])
+    e = Euler2Quaternion(0., gamma, 0.)
+    state0 = np.array([[mav._state.item(0)], #pn
+                       [mav._state.item(1)], #pe
+                       [mav._state.item(2)], #pd
+                       [Va],    # u0
+                       [0.0],    # v0
+                       [0.0],    # w0
+                       [e[0]],    # e0
+                       [e[1]],    # e1
+                       [e[2]],    # e2
+                       [e[3]],    # e3
+                       [0.0],    # p0
+                       [0.0],    # q0
+                       [0.0]])   # r0
     delta0 = MsgDelta()
     x0 = np.concatenate((state0, delta0.to_array()), axis=0)
     # define equality constraints
