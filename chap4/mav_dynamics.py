@@ -157,7 +157,7 @@ class MavDynamics:
         # velocity vector relative to the airmass
         v_air = self._state[3:6] - wind_body_frame
         ur = v_air[0]
-        print('ur', ur)
+        #print('ur', ur)
         vr = v_air[1]
         wr = v_air[2]
 
