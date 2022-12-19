@@ -91,7 +91,8 @@ def compute_tf_model(mav, trim_state, trim_input):
     Va_trim = mav._Va
     alpha_trim = mav._alpha
     phi, theta_trim, psi = Quaternion2Euler(trim_state[6:10])
-    delta_trim = mav._delta
+    delta_e = trim_input.elevator
+    delta_t = trim_input.throttle
 
     # define transfer function constants
     a_phi1 = -1/2 * MAV.rho * (Va_trim ** 2) *  MAV.S_wing * MAV.b * MAV.C_p_p * MAV.b / (2 * Va_trim)
@@ -106,18 +107,17 @@ def compute_tf_model(mav, trim_state, trim_input):
     # REVIEW AV1
     # PAGE 94 TB?
     a_V1 = ((MAV.rho * Va_trim * MAV.S_wing) / MAV.mass) * \
-           (MAV.C_D_0 + MAV.C_D_alpha * alpha_trim + MAV.C_D_delta_e * delta_trim) - \
+           (MAV.C_D_0 + MAV.C_D_alpha * alpha_trim + MAV.C_D_delta_e * delta_e) - \
             (MAV.rho * MAV.S_prop * MAV.C_prop * Va_trim / MAV.mass)
            #dT_dVa(delta_trim, Va_trim) / MAV.mass # AT : Not sure where I got this from (slides?) but the dt_dtva stuff is incorrect
     #a_V2 = dT_ddelta_t(mav, delta_trim, Va_trim) / MAV.mass
-    a_V2 = (MAV.rho * MAV.S_prop * MAV.C_prop * MAV.k_motor ** 2 ) / MAV.mass
+    a_V2 = (MAV.rho * MAV.S_prop * MAV.C_prop * (MAV.k_motor ** 2) * delta_t ) / MAV.mass
     a_V3 = MAV.gravity * np.cos(theta_trim - alpha_trim)
 
     return Va_trim, alpha_trim, theta_trim, a_phi1, a_phi2, a_theta1, a_theta2, a_theta3, a_V1, a_V2, a_V3
 
 
 def compute_ss_model(mav, trim_state, trim_input):
-    # in chpt 5
     mav._state = trim_state
     mav._update_velocity_data()
     x_euler = euler_state(trim_state)
@@ -134,10 +134,15 @@ def compute_ss_model(mav, trim_state, trim_input):
     p = x_euler.item(9)
     q = x_euler.item(10)
     r = x_euler.item(11)
-    delta_a = trim_input.item(0)
-    delta_e = trim_input.item(1)
-    delta_r = trim_input.item(2)
-    delta_t = trim_input.item(3)
+    # delta_a = trim_input.item(0)
+    # delta_e = trim_input.item(1)
+    # delta_r = trim_input.item(2)
+    # delta_t = trim_input.item(3)
+    delta_a = trim_input.aileron
+    #delta_a = trim_input.from_array(0)
+    delta_e = trim_input.elevator
+    delta_r = trim_input.rudder
+    delta_t = trim_input.throttle
 
     beta_star = mav._beta
     Va_star = mav._Va
@@ -189,9 +194,9 @@ def compute_ss_model(mav, trim_state, trim_input):
                       [0.0,0.0],
                       [0.0,0.0]])
 
-    Yv = MAV.rho * MAV.S_wing * MAV.b*v_star * (MAV.C_Y_p*p_star+MAV.C_Y_r * r_star)/(4.*MAV.mass * Va_star) \
-        + MAV.rho * MAV.S_wing * v_star * (MAV.C_Y_0+MAV.C_Y_beta*beta_star+MAV.C_Y_delta_a*delta_a_star+MAV.C_Y_delta_r*delta_r_star)/MAV.mass \
-        + MAV.rho * MAV.S_wing * MAV.C_Y_beta * np.sqrt(u_star**2+w_star**2)/(2.*MAV.mass)
+    Yv = MAV.rho * MAV.S_wing * MAV.b*v_star * (MAV.C_Y_p * p_star+MAV.C_Y_r * r_star) / (4. * MAV.mass * Va_star) \
+        + MAV.rho * MAV.S_wing * v_star * (MAV.C_Y_0 + MAV.C_Y_beta * beta_star + MAV.C_Y_delta_a * delta_a_star + MAV.C_Y_delta_r * delta_r_star) / MAV.mass \
+        + MAV.rho * MAV.S_wing * MAV.C_Y_beta * np.sqrt(u_star ** 2 + w_star**2) / (2. * MAV.mass)
     
     Yp = w_star + MAV.rho * Va_star*MAV.S_wing*MAV.b*MAV.C_Y_p/(4.*MAV.mass)
     
