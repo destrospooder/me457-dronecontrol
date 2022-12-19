@@ -247,10 +247,8 @@ def euler_state(x_quat):
     # BA - I think you're good here. Did a bit of redefining for clarity.
 
     e = np.array([x_quat.item(6), x_quat.item(7), x_quat.item(8), x_quat.item(9)])
-    angles = np.array(Quaternion2Euler(e))
-    #angles = Quaternion2Euler(e)
-    # print("angles:",  angles)
-    # print("angles[0]:",  angles[0])
+    angles = np.array([Quaternion2Euler(e)])
+    print(angles)
 
     x_euler = np.array([[x_quat.item(0)],
                         [x_quat.item(1)],

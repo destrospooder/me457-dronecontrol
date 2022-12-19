@@ -157,38 +157,21 @@ class MavDynamics:
         # velocity vector relative to the airmass
         v_air = self._state[3:6] - wind_body_frame
         ur = v_air[0]
-        #print('ur', ur)
+        print('ur', ur)
         vr = v_air[1]
         wr = v_air[2]
 
-        ur_type = type(ur)
-        vr_type = type(vr)
-        wr_type = type(wr)
-
-        if ur_type != int or ur_type != float:
-            ur = ur[0]
-            #print("ur is now", ur)
-        if vr_type != int or vr_type != float:
-            vr = vr[0]
-            #print("vr is now", vr)
-        if wr_type != int or wr_type != float:
-            wr = wr[0]
-            #print("wr is now", wr)
         # compute airspeed
         self._Va = (ur**2 + vr**2 + wr**2) ** (1/2)
 
-        #ur = ur[0]
         # compute angle of attack
         if ur == 0:
             self._alpha = np.pi/2
         else:
             self._alpha = np.arctan(wr/ur)
-        
-        #print("self va", self._Va)
-        
+
         # compute sideslip angle
         if self._Va == 0:
-            #print("self va", self._Va)
             self._beta = 0
         else:
             self._beta = np.arcsin(vr/((ur**2 + vr**2 + wr**2) ** (1/2)))
