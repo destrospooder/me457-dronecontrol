@@ -1,6 +1,6 @@
 # ME457 - Drone Control (Fall 2022)
 
-Repository containing programming assignments for ME457: Drone Control, taken during Fall 2022. Project collaborators are Sohaib Bhatti, Kyle Deolall, and Ariel Tamayev. Probably not a good idea to keep this public during the semester because of mucky no-good code stealers, but what can you do? Oh well.
+Repository containing programming assignments for ME457: Drone Control, taken during Fall 2022. Project collaborators are Sohaib Bhatti, Kyle Deolall, and Ariel Tamayev.
 
 **Instructor:** Dirk Luchtenburg<br/>
 **Email:** dirk.luchtenburg@cooper.edu<br/>
